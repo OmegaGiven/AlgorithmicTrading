@@ -18,20 +18,18 @@ api = tradeapi.REST(file[0], file[1], file[2])
 bought = False
 
 
-def Main():
+def main():
     while(True):
         customOut = ''
         symbol = input("\nEnter what Symbol you want to check: ")
         customOut += MACD(symbol) + '\n' + MeanRevision(symbol) + '\n' + MeanRevision21day(symbol)
         print(customOut)
-        check = input('do you want to buy or sell? (\'buy\' , \'sell\')')
+        check = input('do you want to buy or sell? (\'buy\' , \'sell\'):')
 
-        if check == 'buy' and bought(symbol) == False:
+        if check == 'buy' and bought(symbol) is False:
             buy(symbol, 50)
-            bought(symbol) == True
-        elif check == 'sell' and bought(symbol) == True:
+        elif check == 'sell' and bought(symbol):
             sell(symbol, 50)
-            bought(symbol) == False
         else:
             continue
 
@@ -125,4 +123,4 @@ def PrintOrders():
     )
     return str(closed_orders)
 
-Main()
+main()
