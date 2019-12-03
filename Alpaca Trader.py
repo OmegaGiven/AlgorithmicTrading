@@ -1,8 +1,4 @@
-'''
-Stocks to look at :
-TMUS, GPRO, BAC, FIT, GE, GERN, IGC, OGEN, ZN, MTNB, NBEV, NEPT, AGRX, DTEA, VTVT, CGC, MSFT
-SQ, GRPN, AMD, NVDA, INTC, NTDOY, ATVI, CRON, IIPR, ACB, TSLA
-'''
+
 print('''
 Stocks to look at :
 TMUS, GPRO, BAC, FIT, GE, GERN, IGC, OGEN, ZN, MTNB, NBEV, NEPT, AGRX, DTEA, VTVT, CGC, MSFT
@@ -10,6 +6,8 @@ SQ, GRPN, AMD, NVDA, INTC, NTDOY, ATVI, CRON, IIPR, ACB, TSLA
 ''')
 
 import alpaca_trade_api as tradeapi
+
+
 f = open('API.txt', 'r')
 if f.mode == 'r':
     file = f.read().split('\n')
@@ -35,7 +33,7 @@ def main():
 
 
 def bought(symbol):
-    if api.get_position(symbol).qty > 0:
+    if int(api.get_position(symbol).qty) > 0:
         return True
     else:
         return False
