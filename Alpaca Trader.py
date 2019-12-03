@@ -1,13 +1,11 @@
+import alpaca_trade_api as tradeapi
+
 
 print('''
 Stocks to look at :
 TMUS, GPRO, BAC, FIT, GE, GERN, IGC, OGEN, ZN, MTNB, NBEV, NEPT, AGRX, DTEA, VTVT, CGC, MSFT
 SQ, GRPN, AMD, NVDA, INTC, NTDOY, ATVI, CRON, IIPR, ACB, TSLA
 ''')
-
-import alpaca_trade_api as tradeapi
-
-
 f = open('API.txt', 'r')
 if f.mode == 'r':
     file = f.read().split('\n')
@@ -19,6 +17,10 @@ bought = False
 def main():
     while(True):
         customOut = ''
+        portfolio = api.list_positions()
+        for position in portfolio:
+            print("{} shares of {}".format(position.qty, position.symbol))
+
         symbol = input("\nEnter what Symbol you want to check: ")
         customOut += MACD(symbol) + '\n' + MeanRevision(symbol) + '\n' + MeanRevision21day(symbol)
         print(customOut)
@@ -37,6 +39,7 @@ def bought(symbol):
         return True
     else:
         return False
+
 
 def MACD(symbol):
     out = ''
@@ -83,7 +86,7 @@ def MeanRevision21day(symbol):
     barset = api.get_barset(symbol, 'day', limit=21)
     stock = barset[symbol]
     total = 0
-    for x in range(0,21):
+    for x in range(0, 21):
         total += stock[x].c
     mean = total / 21
     current = stock[20].o
@@ -96,21 +99,20 @@ def MeanRevision21day(symbol):
     return 'Mean Reversion 21 day Strategy: ' + out
 
 
-def buy(symbol, quantity = 1):
+def buy(symbol, quantity=1):
     f = open('History', 'a+')
-    id = api.submit_order(symbol, quantity, 'buy', 'market', 'gtc')
+    api.submit_order(symbol, quantity, 'buy', 'market', 'gtc')
     f.write('buying: ' + symbol + ' at ' + ' quantity: ' + str(quantity))
     f.close()
 
 
-def sell(symbol, quantity = 1, limit_price = 0):
+def sell(symbol, quantity=1, limit_price=0):
     f = open('History', 'a+')
-    if (limit_price == 0):
-        id = api.submit_order(symbol, quantity, 'sell', 'market', 'opg')
+    if limit_price == 0:
+        api.submit_order(symbol, quantity, 'sell', 'limit', 'opg', api.get_position(symbol).current_price)
     else:
-        id = api.submit_order(symbol, quantity, 'sell', 'limit', 'opg', limit_price)
-    f.write('selling: ' + symbol + ' at ' + ' quantity: ' + str(quantity))
-    f.close
+        api.submit_order(symbol, quantity, 'sell', 'limit', 'opg', limit_price)
+    f.write('\nselling: ' + symbol + ' at ' + ' quantity: ' + str(quantity))
 
 
 def PrintOrders():
@@ -120,5 +122,6 @@ def PrintOrders():
         limit=100
     )
     return str(closed_orders)
+
 
 main()
