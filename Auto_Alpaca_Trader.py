@@ -17,8 +17,6 @@ def main(symbol):
         buy(symbol, 50)
     elif MACD(symbol) == 'sell' and bought(symbol) is True:
         sell(symbol, 50)
-    else:
-        continue
 
 
 def bought(symbol):
