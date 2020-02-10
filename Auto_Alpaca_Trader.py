@@ -20,7 +20,7 @@ def main(symbol):
 
 
 def bought(symbol):
-    if int(api.get_position(symbol).qty) > 0:
+    if int(api.get_position(symbol).qty) >= 51:
         return True
     else:
         return False
@@ -88,7 +88,7 @@ def MeanRevision21day(symbol):
 
 def buy(symbol, quantity=1):
     f = open('History', 'a+')
-    api.submit_order(symbol, quantity, 'buy', 'market', 'gtc')
+    api.submit_order(symbol, quantity, 'buy', 'market', 'day')
     f.write('buying: ' + symbol + ' at ' + ' quantity: ' + str(quantity))
     f.close()
 
@@ -96,7 +96,7 @@ def buy(symbol, quantity=1):
 def sell(symbol, quantity=1, limit_price=0):
     f = open('History', 'a+')
     if limit_price == 0:
-        api.submit_order(symbol, quantity, 'sell', 'limit', 'opg', api.get_position(symbol).current_price)
+        api.submit_order(symbol, quantity, 'sell', 'market', 'day', api.get_position(symbol).current_price)
     else:
         api.submit_order(symbol, quantity, 'sell', 'limit', 'opg', limit_price)
     f.write('\nselling: ' + symbol + ' at ' + ' quantity: ' + str(quantity))
