@@ -18,8 +18,13 @@ def main():
     while(True):
         customOut = ''
         portfolio = api.list_positions()
+        print('Current positions:')
         for position in portfolio:
-            print("{} shares of {}".format(position.qty, position.symbol))
+            print("{} shares of {}, current price: {}, last day price: {}".format(position.qty, position.symbol, position.current_price, position.lastday_price))
+
+        print('current orders:')
+        for position in api.list_orders():
+            print('{} shares of {}, limit price: {}, order type: {}'.format(position.qty, position.symbol, position.limit_price, position.order_type))
 
         symbol = input("\nEnter what Symbol you want to check: ")
         customOut += MACD(symbol) + '\n' + MeanRevision(symbol) + '\n' + MeanRevision21day(symbol)
@@ -36,6 +41,7 @@ def main():
 
 def bought(symbol):
     if int(api.get_position(symbol).qty) > 0:
+        print('Already bought qty: ' + api.get_position(symbol).qty)
         return True
     else:
         return False
@@ -123,5 +129,15 @@ def PrintOrders():
     )
     return str(closed_orders)
 
+
+
+def buy_all_recomended_at_1():
+    recommended = {'TMUS', 'GPRO', 'BAC', 'FIT', 'GE', 'GERN', 'IGC', 'OGEN', 'ZN', 'MTNB', 'NBEV', 'NEPT', 'AGRX', 'DTEA', 'VTVT', 'CGC', 'MSFT',
+'SQ', 'GRPN', 'AMD', 'NVDA', 'INTC', 'ATVI', 'CRON', 'IIPR', 'ACB', 'TSLA'}
+    f = open('History', 'a+')
+    for x in recommended:
+        api.submit_order(x, 1, 'buy', 'market', 'gtc')
+    f.write('buying: ' + x + ' at ' + ' quantity: ' + str(1) + '\n')
+    f.close()
 
 main()
